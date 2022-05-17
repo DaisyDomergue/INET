@@ -1,0 +1,8 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "asciiPanel.jar",
+        "rogueLike/lanterna-2.1.8.jar",
+        "lanterna-2.1.8.jar"
+    ]
+}
