@@ -17,8 +17,8 @@ public class Map implements Serializable {
     private int numEnemy;
     private String mapOne[];
     private static Map instance;
-    private static Enemy[] eList;
-
+    private ArrayList<Player> players;
+    
     public Map() {
     }
 
@@ -30,21 +30,30 @@ public class Map implements Serializable {
         instance.initMap();
         return instance;
     }
+
     public static Map setInstance(Map m) throws FileNotFoundException {
         instance = m;
         return instance;
     }
 
-
-    private ArrayList<Player> players = new ArrayList<>();
     // Array of enemies
-    int enemyPos[][];
+    // int enemyPos[][];
+    //private ArrayList<Player> players = new ArrayList<>();
 
-    public void addPlayer(Player p) {
+    public void addPlayer(Player p1, String s) {
         // p = new Player(1, 1);
-        p.setPosX(1);
-        p.setPosy(1);
-        players.add(p);
+        if(players.size() > 1) {
+            p1.setPosX(20);
+            p1.setPosy(48);
+        }
+        p1.setPosX(1);
+        p1.setPosy(1);
+        p1.setName(s);
+
+        /* p1 = new Player("@", 1, 1); */
+        players.add(p1);
+        //map[p1.getX()][p1.getY()] = p1.getName(); 
+        setString(s, p1.getX(), p1.getY());     // put the player in the two dimensional array
     }
 
     public void initMap() throws FileNotFoundException {
@@ -52,26 +61,7 @@ public class Map implements Serializable {
         maxY = 20;
         map = new String[50][20];
         mapOne = new String[20];
-
-        // Create enemies on the map
-        // numEnemy = 4;
-        // enemyPos = new int[4][2];
-        // enemyPos[0][0] = 48;
-        // enemyPos[1][0] = 9;
-        // enemyPos[2][0] = 21;
-        // enemyPos[3][0] = 3;
-        // enemyPos[0][1] = 18;
-        // enemyPos[1][1] = 1;
-        // enemyPos[2][1] = 8;
-        // enemyPos[3][1] = 14;
-        // int num = this.getNumEnemy();
-        // eList = new Enemy[num];
-        // for (int i = 0; i < num; i++) {
-        //     int x = this.enemyPos[i][0];
-        //     int y = this.enemyPos[i][1];
-        //     eList[i] = new Enemy(x, y, this);
-        //     eList[i].start();
-        // }
+        players = new ArrayList<>();
 
         File file = new File("map.txt");
         Scanner sc = new Scanner(file);
@@ -88,16 +78,16 @@ public class Map implements Serializable {
             }
         }
     }
-    public Enemy[] geteList(){
-        return this.eList;
-    }
 
     // Print characters from map array to terminal using screen
     public void PrintMap(Screen screen) {
-        System.out.println("number of players "+ players.size());
-        Player p = getPlayerNumber(0);
-        int pX = p.getX();
-        int pY = p.getY();
+        //System.out.println("number of players " + players.size());
+        /* Player p1 = getPlayerNumber(0);
+        int pX1 = p1.getX();
+        int pY1 = p1.getY();
+        Player p2 = getPlayerNumber(1);
+        int pX2 = p2.getX();
+        int pY2 = p2.getY(); */
 
         screen.clear();
 
@@ -109,27 +99,31 @@ public class Map implements Serializable {
                     screen.putString(j + j, i, map[j][i], Terminal.Color.YELLOW, Terminal.Color.BLACK);
                     screen.putString(j + j + 1, i, map[j][i], Terminal.Color.YELLOW, Terminal.Color.BLACK);
                 }
+                if (map[j][i].equals("$")) {
+                    screen.putString(j + j, i, map[j][i], Terminal.Color.GREEN, Terminal.Color.BLACK);
+                    screen.putString(j + j + 1, i, map[j][i], Terminal.Color.GREEN, Terminal.Color.BLACK);
+                }
                 if (map[j][i].equals("G")) {
                     screen.putString(j + j, i, map[j][i], Terminal.Color.GREEN, Terminal.Color.BLACK);
                 } else {
-                    if (Math.abs(j - pX) < 100 && Math.abs(i - pY) < 100) {
-                    // Print enemies red EE
-                    if (map[j][i].equals("E")) {
-                        screen.putString(j + j, i, map[j][i], Terminal.Color.RED, Terminal.Color.BLACK);
-                        screen.putString(j + j + 1, i, map[j][i], Terminal.Color.RED, Terminal.Color.BLACK);
-                    }
-                    // Print walls white
-                    else {
-                        screen.putString(j + j, i, map[j][i], Terminal.Color.WHITE, Terminal.Color.BLACK);
-                        screen.putString(j + j + 1, i, map[j][i], Terminal.Color.WHITE, Terminal.Color.BLACK);
-                    }
-                    }
+                    //if (Math.abs(j - pX1) < 100 && Math.abs(i - pY1) < 100) {
+                        // Print enemies red EE
+                        if (map[j][i].equals("E")) {
+                            screen.putString(j + j, i, map[j][i], Terminal.Color.RED, Terminal.Color.BLACK);
+                            screen.putString(j + j + 1, i, map[j][i], Terminal.Color.RED, Terminal.Color.BLACK);
+                        }
+                        // Print walls white
+                        else {
+                            screen.putString(j + j, i, map[j][i], Terminal.Color.WHITE, Terminal.Color.BLACK);
+                            screen.putString(j + j + 1, i, map[j][i], Terminal.Color.WHITE, Terminal.Color.BLACK);
+                        }
+                    //}
                     // Only show blocks that are within 5 space of the character. Simulates using a
                     // lantern in a dark room (CYAN = dark, WHITE = illuminated)
-                    else {
-                    screen.putString(j + j, i, "#", Terminal.Color.CYAN, Terminal.Color.BLACK);
-                    screen.putString(j + j + 1, i, "#", Terminal.Color.CYAN, Terminal.Color.BLACK);
-                    }
+                    /* else {
+                        screen.putString(j + j, i, "#", Terminal.Color.CYAN, Terminal.Color.BLACK);
+                        screen.putString(j + j + 1, i, "#", Terminal.Color.CYAN, Terminal.Color.BLACK);
+                    } */
                 }
             }
             // The double print statements are used to make the spacing between the x and
@@ -185,6 +179,38 @@ public class Map implements Serializable {
         map[pX][pY] = " ";
         map[pX][pY - 1] = "@";
     }
+
+    /* public void movePlayerTwoRight() {
+        int pX = getPlayerNumber(1).getX();
+        int pY = getPlayerNumber(1).getY();
+        getPlayerNumber(0).setPosX(pX + 1);
+        map[pX][pY] = " ";
+        map[pX + 1][pY] = "$";
+    }
+
+    public void movePlayerTwoLeft() {
+        int pX = getPlayerNumber(1).getX();
+        int pY = getPlayerNumber(1).getY();
+        getPlayerNumber(0).setPosX(pX - 1);
+        map[pX][pY] = " ";
+        map[pX - 1][pY] = "$";
+    }
+
+    public void movePlayerTwoDown() {
+        int pX = getPlayerNumber(1).getX();
+        int pY = getPlayerNumber(1).getY();
+        getPlayerNumber(0).setPosy(pY + 1);
+        map[pX][pY] = " ";
+        map[pX][pY + 1] = "$";
+    }
+
+    public void movePlayerTwoUp() {
+        int pX = getPlayerNumber(1).getX();
+        int pY = getPlayerNumber(1).getY();
+        getPlayerNumber(0).setPosy(pY - 1);
+        map[pX][pY] = " ";
+        map[pX][pY - 1] = "$";
+    } */
 
     // Current player x and y coordinate
     public int getPlayerX() {
@@ -251,11 +277,11 @@ public class Map implements Serializable {
 
     // Allows access to player health data
     public void hurtPlayer() {
-    getPlayerNumber(0).setHealth(-10);
+        getPlayerNumber(0).setHealth(-10);
     }
 
     public int getPlayerHealth() {
-    return getPlayerNumber(0).getHealth();
+        return getPlayerNumber(0).getHealth();
     }
 
 }

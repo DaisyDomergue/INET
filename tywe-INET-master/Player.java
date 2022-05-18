@@ -15,9 +15,17 @@ public class Player implements Serializable {
         health = 100;
     }
 
-    public Player(String name, int ClientNum){
+    public Player(String name, int ClientNum) {
         this.name = name;
         this.ClientNum = ClientNum;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String s) {
+        name = s;
     }
 
     // Standard get and set methods for player attributes

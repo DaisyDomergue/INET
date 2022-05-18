@@ -38,10 +38,10 @@ public class Game {
         screen = sc;
 
         // Start the enemy threads and pass them the map to manipulate
-        System.out.println("about to print map");
+        //System.out.println("about to print map");
         
         level.PrintMap(sc);
-        System.out.println("done to print map");
+        //System.out.println("done to print map");
 
         // Keep reading input until user quits the game
         /*
@@ -146,7 +146,7 @@ public class Game {
     }
 
     public static void movementController(Screen screen,ObjectOutputStream op, ObjectInputStream input) {
-        System.out.println("Starting Movement Controls");
+        //System.out.println("Starting Movement Controls");
         boolean stop = false;
         while (!stop) {
             Key key = screen.readInput();
@@ -189,15 +189,15 @@ public class Game {
                     break;
             }
             try {
-                System.out.println("sending map to server");
+               // System.out.println("sending map to server");
                 op.writeObject(level);
                 op.flush();
-                System.out.println("Sent new message");
+               // System.out.println("Sent new message");
 
                 Map map = (Map) input.readObject();
                 level = map;
                 level.PrintMap(screen);
-                System.out.println("Getting map from server");
+               // System.out.println("Getting map from server");
             } catch (IOException | ClassNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

@@ -30,7 +30,13 @@ public class ServerLogic {
             System.out.println("Start thread for " + clientNum);
             game = Map.getInstance();
             Player p = new Player("player"+clientNum,clientNum);
-            game.addPlayer(p);
+            if(clientNum == 1) {
+                game.addPlayer(p, "@");
+
+            }
+            else {
+                game.addPlayer(p, "$");
+            }
             ClientThreads task = new ClientThreads(client, game, clientNum);
             clientNum++;
             new Thread(task).start();
